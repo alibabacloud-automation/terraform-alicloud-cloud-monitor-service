@@ -9,9 +9,10 @@ data "alicloud_zones" "default" {
 }
 
 data "alicloud_instance_types" "default" {
-  availability_zone = data.alicloud_zones.default.zones[0].id
-  cpu_core_count    = 1
-  memory_size       = 2
+  availability_zone    = data.alicloud_zones.default.zones[0].id
+  cpu_core_count       = 2
+  memory_size          = 8
+  instance_type_family = "ecs.g9i"
 }
 
 data "alicloud_images" "default" {
