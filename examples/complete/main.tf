@@ -4,9 +4,8 @@ provider "alicloud" {
 }
 
 data "alicloud_instance_types" "default" {
-  cpu_core_count       = 2
-  memory_size          = 8
-  instance_type_family = "ecs.g9i"
+  cpu_core_count = 1
+  memory_size    = 2
 }
 
 locals {
