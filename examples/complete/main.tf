@@ -3,16 +3,14 @@ provider "alicloud" {
   region = var.region
 }
 
-# Data sources for existing resources
-data "alicloud_zones" "default" {
-  available_resource_creation = "Instance"
-}
-
 data "alicloud_instance_types" "default" {
-  availability_zone    = data.alicloud_zones.default.zones[0].id
   cpu_core_count       = 2
   memory_size          = 8
   instance_type_family = "ecs.g9i"
+}
+
+locals {
+  availability_zones = data.alicloud_instance_types.default.instance_types[0].availability_zones
 }
 
 data "alicloud_images" "default" {
@@ -29,7 +27,7 @@ resource "alicloud_vpc" "example" {
 resource "alicloud_vswitch" "example" {
   vpc_id       = alicloud_vpc.example.id
   cidr_block   = "10.0.1.0/24"
-  zone_id      = data.alicloud_zones.default.zones[0].id
+  zone_id      = local.availability_zones[0]
   vswitch_name = "${var.name}-vswitch"
 }
 
@@ -39,7 +37,7 @@ resource "alicloud_security_group" "example" {
 }
 
 resource "alicloud_instance" "example" {
-  availability_zone    = data.alicloud_zones.default.zones[0].id
+  availability_zone    = local.availability_zones[0]
   instance_name        = "${var.name}-instance"
   image_id             = data.alicloud_images.default.images[0].id
   instance_type        = data.alicloud_instance_types.default.instance_types[0].id
